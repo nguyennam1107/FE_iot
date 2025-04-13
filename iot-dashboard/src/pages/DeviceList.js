@@ -42,8 +42,8 @@ const DeviceList = () => {
                   <strong>Location:</strong> {device.location}
                 </p>
                 <div className="d-flex justify-content-between">
-                  <Link to={`/devices/${device.id}`} className="btn btn-info">View Details</Link>
-                  <Link to={`/devices/${device.id}/edit`} className="btn btn-warning">Edit</Link>
+                  <Link to={`/devices/${device.deviceId}`} className="btn btn-info">View Details</Link>
+                  <Link to={`/devices/${device.deviceId}/edit`} className="btn btn-warning">Edit</Link>
                 </div>
               </div>
             </div>
