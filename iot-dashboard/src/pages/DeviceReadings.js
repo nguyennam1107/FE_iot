@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+} from 'recharts';
 import { deviceService } from '../api/devices';
 
 const DeviceReadings = () => {
@@ -99,7 +102,27 @@ const DeviceReadings = () => {
           </div>
         </div>
       </div>
-
+      <div className="card mb-4">
+        <div className="card-body">
+          <h5 className="card-title">Temperature & Humidity Chart</h5>
+          {readings.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={readings.slice().reverse()} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="timestamp" tickFormatter={(value) => new Date(value).toLocaleTimeString()} />
+                <YAxis yAxisId="left" label={{ value: '°C', angle: -90, position: 'insideLeft' }} />
+                <YAxis yAxisId="right" orientation="right" label={{ value: '%', angle: 90, position: 'insideRight' }} />
+                <Tooltip labelFormatter={(value) => new Date(value).toLocaleString()} />
+                <Legend />
+                <Line yAxisId="left" type="monotone" dataKey="temperature" stroke="#007bff" name="Temperature" />
+                <Line yAxisId="right" type="monotone" dataKey="humidity" stroke="#28a745" name="Humidity" />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <p>No data available for chart</p>
+          )}
+        </div>
+      </div>
       <div className="card">
         <div className="card-body">
           <h5 className="card-title">Reading History</h5>

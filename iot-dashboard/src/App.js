@@ -11,20 +11,21 @@ import DeviceEdit from './pages/DeviceEdit';
 import DeviceReadings from './pages/DeviceReadings';
 import AlertList from './pages/AlertList';
 import NewDevice from './pages/NewDevice';
+import Home from './pages/Home';
+import UserProfile from './pages/UserProfile';
+import AdminProfile from './pages/AdminProfile';
 import './App.css';
 
-
-
-// Import your components here
-// import Login from './components/Login';
-// import Register from './components/Register';
-// import Dashboard from './components/Dashboard';
-// import Devices from './components/Devices';
-// import Alerts from './components/Alerts';
 
 const PrivateRoute = ({ children }) => {
   const { user } = useAuth();
   return user?.isAuthenticated ? children : <Navigate to="/login" />;
+};
+
+// Special route that checks if the user has admin permissions
+const AdminRoute = ({ children }) => {
+  const { user } = useAuth();
+  return user?.isAuthenticated && user?.role === 'admin' ? children : <Navigate to="/" />;
 };
 
 function App() {
@@ -39,12 +40,28 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               
-              {/* Protected routes */}
+              {/* Protected routes for all authenticated users */}
               <Route
                 path="/"
                 element={
                   <PrivateRoute>
+                    <Home />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  <PrivateRoute>
                     <Dashboard />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/profile/:id"
+                element={
+                  <PrivateRoute>
+                    <UserProfile />
                   </PrivateRoute>
                 }
               />
@@ -57,14 +74,6 @@ function App() {
                 }
               />
               <Route 
-                path="/devices/new" 
-                element={
-                <PrivateRoute>
-                  <NewDevice />
-                </PrivateRoute>
-                } 
-              />
-              <Route 
                 path="/devices/:id"
                 element={ 
                   <PrivateRoute>
@@ -73,25 +82,45 @@ function App() {
                 } 
               />
               <Route 
-                path="/devices/:id/edit" 
+                path="/devices/:id/readings" 
                 element={
                   <PrivateRoute>
-                    <DeviceEdit/>
+                    <DeviceReadings />
                   </PrivateRoute>
                 } 
               />
+              
+              {/* Admin-only routes */}
               <Route 
-                path="/devices/:id/readings" 
+                path="/devices/new" 
                 element={
-                <DeviceReadings />
+                  <AdminRoute>
+                    <NewDevice />
+                  </AdminRoute>
+                } 
+              />
+              <Route
+                path="/admin/profile/:id"
+                element={
+                  <AdminRoute>
+                    <AdminProfile />
+                  </AdminRoute>
+                }
+              />
+              <Route 
+                path="/devices/:id/edit" 
+                element={
+                  <AdminRoute>
+                    <DeviceEdit/>
+                  </AdminRoute>
                 } 
               />
               <Route
                 path="/alerts"
                 element={
-                  <PrivateRoute>
+                  <AdminRoute>
                     <AlertList />
-                  </PrivateRoute>
+                  </AdminRoute>
                 }
               />
             </Routes>

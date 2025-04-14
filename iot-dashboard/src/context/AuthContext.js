@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       const response = await authService.login(credentials);
-      setUser({ ...response.user, isAuthenticated: true });
+      setUser({ ...response.user, isAuthenticated: true , _id: response.user._id});
       return response;
     } catch (error) {
       throw error;
